@@ -11,7 +11,6 @@ import edu.mirea.onebeattrue.productlist.domain.usecase.LoadNextDataUseCase
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Intent
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Label
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.State
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -70,7 +69,7 @@ class ProductsStoreFactory @Inject constructor(
 
     private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
-            scope.launch(Dispatchers.Default) {
+            scope.launch {
                 getProductsUseCase().collect {
                     dispatch(Action.ProductsLoaded(it))
                 }
