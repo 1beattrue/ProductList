@@ -4,17 +4,20 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import edu.mirea.onebeattrue.productlist.domain.entity.Product
 import edu.mirea.onebeattrue.productlist.presentation.extensions.componentScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class DefaultSearchComponent(
-    componentContext: ComponentContext,
+class DefaultSearchComponent @AssistedInject constructor(
     private val storeFactory: SearchStoreFactory,
-    private val onBackClicked: () -> Unit,
-    private val onProductClicked: (Product) -> Unit
+    @Assisted("onBackClicked") private val onBackClicked: () -> Unit,
+    @Assisted("onProductClicked") private val onProductClicked: (Product) -> Unit,
+    @Assisted("componentContext") componentContext: ComponentContext
 ) : SearchComponent, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore { storeFactory.create() }
@@ -48,5 +51,14 @@ class DefaultSearchComponent(
 
     override fun onClickBack() {
         store.accept(SearchStore.Intent.ClickBack)
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("onBackClicked") onBackClicked: () -> Unit,
+            @Assisted("onProductClicked") onProductClicked: (Product) -> Unit,
+            @Assisted("componentContext") componentContext: ComponentContext
+        ): DefaultSearchComponent
     }
 }
