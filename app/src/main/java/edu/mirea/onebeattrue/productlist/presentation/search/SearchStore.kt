@@ -47,7 +47,7 @@ class SearchStoreFactory @Inject constructor(
 ) {
     fun create(): SearchStore =
         object : SearchStore, Store<Intent, State, Label> by storeFactory.create(
-            name = "SearchStore",
+            name = STORE_NAME,
             initialState = State(
                 searchQuery = "",
                 searchState = State.SearchState.Initial
@@ -123,5 +123,9 @@ class SearchStoreFactory @Inject constructor(
                     copy(searchState = searchState)
                 }
             }
+    }
+
+    companion object {
+        private const val STORE_NAME = "SearchStore"
     }
 }

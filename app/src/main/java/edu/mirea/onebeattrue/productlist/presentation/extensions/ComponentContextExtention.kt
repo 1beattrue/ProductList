@@ -1,4 +1,4 @@
-package edu.mirea.onebeattrue.productlist.core
+package edu.mirea.onebeattrue.productlist.presentation.extensions
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.doOnDestroy

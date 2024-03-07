@@ -47,7 +47,7 @@ class ProductsStoreFactory @Inject constructor(
 ) {
     fun create(): ProductsStore =
         object : ProductsStore, Store<Intent, State, Label> by storeFactory.create(
-            name = "ProductsStore",
+            name = STORE_NAME,
             initialState = State(
                 productList = State.ProductList.Initial,
                 isNextDataLoading = false
@@ -126,5 +126,9 @@ class ProductsStoreFactory @Inject constructor(
                     )
                 }
             }
+    }
+
+    companion object {
+        private const val STORE_NAME = "ProductsStore"
     }
 }

@@ -29,7 +29,7 @@ class DetailsStoreFactory @Inject constructor(
 ) {
     fun create(product: Product): DetailsStore =
         object : DetailsStore, Store<Intent, State, Label> by storeFactory.create(
-            name = "DetailsStore",
+            name = STORE_NAME,
             initialState = State(product),
             executorFactory = ::ExecutorImpl
         ) {}
@@ -44,5 +44,9 @@ class DetailsStoreFactory @Inject constructor(
                 Intent.ClickBack -> publish(Label.ClickBack)
             }
         }
+    }
+
+    companion object {
+        private const val STORE_NAME = "DetailsStore"
     }
 }
