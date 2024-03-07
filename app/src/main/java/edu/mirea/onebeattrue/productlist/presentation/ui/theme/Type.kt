@@ -1,4 +1,4 @@
-package edu.mirea.onebeattrue.productlist.ui.theme
+package edu.mirea.onebeattrue.productlist.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
