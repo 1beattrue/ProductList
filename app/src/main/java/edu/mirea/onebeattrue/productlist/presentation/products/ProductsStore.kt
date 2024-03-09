@@ -11,6 +11,7 @@ import edu.mirea.onebeattrue.productlist.domain.usecase.LoadNextDataUseCase
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Intent
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Label
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.State
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,6 +58,8 @@ class ProductsStoreFactory @Inject constructor(
         ) {}
 
     private sealed interface Action {
+        data object ProductListLoading : Action
+        data object ProductListLoadingFailure : Action
         data class ProductsLoaded(val products: List<Product>) : Action
     }
 
@@ -70,9 +73,12 @@ class ProductsStoreFactory @Inject constructor(
     private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
-                getProductsUseCase().collect {
-                    dispatch(Action.ProductsLoaded(it))
-                }
+                dispatch(Action.ProductListLoading)
+                getProductsUseCase()
+                    .catch {dispatch(Action.ProductListLoadingFailure)}
+                    .collect {
+                        dispatch(Action.ProductsLoaded(it))
+                    }
             }
         }
     }
@@ -90,6 +96,7 @@ class ProductsStoreFactory @Inject constructor(
 
                 Intent.LoadNextData -> {
                     scope.launch {
+                        dispatch(Msg.NextProductsLoading)
                         loadNextDataUseCase()
                     }
                 }
@@ -99,6 +106,8 @@ class ProductsStoreFactory @Inject constructor(
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
                 is Action.ProductsLoaded -> dispatch(Msg.ProductsLoaded(action.products))
+                Action.ProductListLoading -> dispatch(Msg.ProductListLoading)
+                Action.ProductListLoadingFailure -> dispatch(Msg.ProductListLoadingFailure)
             }
         }
     }

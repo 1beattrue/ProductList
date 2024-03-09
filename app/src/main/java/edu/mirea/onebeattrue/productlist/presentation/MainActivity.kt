@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
             ProductListTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     RootContent(component = component)
                 }

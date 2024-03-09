@@ -28,11 +28,11 @@ class ProductListRepositoryImpl @Inject constructor(
 
                 loadedProducts += nextProducts
                 skip += LIMIT
-
+                Log.d("ProductListRepositoryImpl", "$skip")
                 emit(loadedProducts)
             }
         }
-            .retry { throwable ->
+            .retry(2) { throwable ->
                 Log.e("ProductListRepositoryImpl", throwable.message.toString())
                 delay(RETRY_TIMEOUT_MILLIS)
                 true

@@ -53,6 +53,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.icons)
+
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gsonConverter)
     implementation(libs.glide.compose)
