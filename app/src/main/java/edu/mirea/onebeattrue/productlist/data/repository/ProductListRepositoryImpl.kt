@@ -29,7 +29,7 @@ class ProductListRepositoryImpl @Inject constructor(
                 loadedProducts += nextProducts
                 skip += LIMIT
                 Log.d("ProductListRepositoryImpl", "$skip")
-                emit(loadedProducts)
+                emit(loadedProducts.toList())
             }
         }
             .retry(2) { throwable ->

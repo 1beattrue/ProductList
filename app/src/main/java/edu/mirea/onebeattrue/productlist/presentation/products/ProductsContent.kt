@@ -53,57 +53,22 @@ fun ProductsContent(
 ) {
     val state by component.model.collectAsState()
 
-    when (val listState = state.productList) {
-        ProductsStore.State.ProductList.Initial -> {}
-
-        ProductsStore.State.ProductList.Failure -> {
-            Failure()
-        }
-
-        is ProductsStore.State.ProductList.Loaded -> {
-            println(listState.products.size)
-            Loaded(
-                products = listState.products,
-                onProductClick = { component.onClickProduct(it) },
-                onSearchClick = { component.onClickSearch() },
-                loadNextData = {
-                    component.onLoadNextData()
-                },
-                isNextDataLoading = state.isNextDataLoading
-            )
-        }
-
-        ProductsStore.State.ProductList.Loading -> {
-            Loading()
-        }
-    }
-}
-
-@Composable
-private fun Loaded(
-    modifier: Modifier = Modifier,
-    products: List<Product>,
-    onProductClick: (Product) -> Unit,
-    onSearchClick: () -> Unit,
-    loadNextData: () -> Unit,
-    isNextDataLoading: Boolean
-) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            SearchCard(onSearchClick = { onSearchClick() })
+            SearchCard(onSearchClick = { component.onClickSearch() })
         }
         items(
-            items = products,
+            items = state.products,
             key = { it.id },
         ) { product ->
             ProductCard(
                 product = product,
                 onProductClick = {
-                    onProductClick(it)
+                    component.onClickProduct(it)
                 }
             )
         }
@@ -112,13 +77,21 @@ private fun Loaded(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                if (isNextDataLoading) {
-                    CircularProgressIndicator()
-                } else {
-                    OutlinedButton(
-                        onClick = { loadNextData() }
-                    ) {
-                        Text(text = "Загрузить еще")
+                when (state.loadingState) {
+                    ProductsStore.State.LoadingState.Initial -> {
+                        OutlinedButton(
+                            onClick = { component.onLoadNextData() }
+                        ) {
+                            Text(text = "Загрузить еще")
+                        }
+                    }
+
+                    ProductsStore.State.LoadingState.Failure -> {
+                        Failure()
+                    }
+
+                    ProductsStore.State.LoadingState.Loading -> {
+                        Loading()
                     }
                 }
             }

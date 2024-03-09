@@ -1,5 +1,6 @@
 package edu.mirea.onebeattrue.productlist.presentation.products
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -23,14 +24,13 @@ interface ProductsStore : Store<Intent, State, Label> {
     }
 
     data class State(
-        val productList: ProductList,
-        val isNextDataLoading: Boolean
+        val products: List<Product>,
+        val loadingState: LoadingState
     ) {
-        sealed interface ProductList {
-            data object Initial : ProductList
-            data object Loading : ProductList
-            data object Failure : ProductList
-            data class Loaded(val products: List<Product>) : ProductList
+        sealed interface LoadingState {
+            data object Initial : LoadingState
+            data object Loading : LoadingState
+            data object Failure : LoadingState
         }
     }
 
@@ -49,8 +49,8 @@ class ProductsStoreFactory @Inject constructor(
         object : ProductsStore, Store<Intent, State, Label> by storeFactory.create(
             name = STORE_NAME,
             initialState = State(
-                productList = State.ProductList.Initial,
-                isNextDataLoading = false
+                products = listOf(),
+                loadingState = State.LoadingState.Initial
             ),
             bootstrapper = BootstrapperImpl(),
             executorFactory = ::ExecutorImpl,
@@ -66,7 +66,6 @@ class ProductsStoreFactory @Inject constructor(
     private sealed interface Msg {
         data class ProductsLoaded(val products: List<Product>) : Msg
         data object ProductListLoading : Msg
-        data object NextProductsLoading : Msg
         data object ProductListLoadingFailure : Msg
     }
 
@@ -75,9 +74,10 @@ class ProductsStoreFactory @Inject constructor(
             scope.launch {
                 dispatch(Action.ProductListLoading)
                 getProductsUseCase()
-                    .catch {dispatch(Action.ProductListLoadingFailure)}
+                    .catch { dispatch(Action.ProductListLoadingFailure) }
                     .collect {
                         dispatch(Action.ProductsLoaded(it))
+                        Log.d("BootstrapperImpl", "collect")
                     }
             }
         }
@@ -96,7 +96,6 @@ class ProductsStoreFactory @Inject constructor(
 
                 Intent.LoadNextData -> {
                     scope.launch {
-                        dispatch(Msg.NextProductsLoading)
                         loadNextDataUseCase()
                     }
                 }
@@ -115,22 +114,18 @@ class ProductsStoreFactory @Inject constructor(
     private object ReducerImpl : Reducer<State, Msg> {
         override fun State.reduce(msg: Msg): State =
             when (msg) {
-                Msg.NextProductsLoading -> {
-                    copy(isNextDataLoading = true)
-                }
-
                 Msg.ProductListLoading -> {
-                    copy(productList = State.ProductList.Loading)
+                    copy(loadingState = State.LoadingState.Loading)
                 }
 
                 Msg.ProductListLoadingFailure -> {
-                    copy(productList = State.ProductList.Failure)
+                    copy(loadingState = State.LoadingState.Failure)
                 }
 
                 is Msg.ProductsLoaded -> {
                     copy(
-                        productList = State.ProductList.Loaded(msg.products),
-                        isNextDataLoading = false
+                        products = msg.products,
+                        loadingState = State.LoadingState.Initial
                     )
                 }
             }
