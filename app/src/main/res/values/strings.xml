@@ -2,4 +2,5 @@
     <string name="app_name">ProductList</string>
     <string name="loading_failure">Ошибка загрузки данных</string>
     <string name="search">Поиск</string>
+    <string name="nothing_to_load">Товары кончились</string>
 </resources>

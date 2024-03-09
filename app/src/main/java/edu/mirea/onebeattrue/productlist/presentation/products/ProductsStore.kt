@@ -31,6 +31,7 @@ interface ProductsStore : Store<Intent, State, Label> {
             data object Initial : LoadingState
             data object Loading : LoadingState
             data object Failure : LoadingState
+            data object NothingToLoad : LoadingState
         }
     }
 
@@ -67,6 +68,7 @@ class ProductsStoreFactory @Inject constructor(
         data class ProductsLoaded(val products: List<Product>) : Msg
         data object ProductListLoading : Msg
         data object ProductListLoadingFailure : Msg
+        data object NothingToLoad : Msg
     }
 
     private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
@@ -96,6 +98,7 @@ class ProductsStoreFactory @Inject constructor(
 
                 Intent.LoadNextData -> {
                     scope.launch {
+                        dispatch(Msg.ProductListLoading)
                         loadNextDataUseCase()
                     }
                 }
@@ -104,7 +107,15 @@ class ProductsStoreFactory @Inject constructor(
 
         override fun executeAction(action: Action, getState: () -> State) {
             when (action) {
-                is Action.ProductsLoaded -> dispatch(Msg.ProductsLoaded(action.products))
+                is Action.ProductsLoaded -> {
+                    val products = getState().products
+                    if (action.products.size != products.size) {
+                        dispatch(Msg.ProductsLoaded(action.products))
+                    } else {
+                        dispatch(Msg.NothingToLoad)
+                    }
+                }
+
                 Action.ProductListLoading -> dispatch(Msg.ProductListLoading)
                 Action.ProductListLoadingFailure -> dispatch(Msg.ProductListLoadingFailure)
             }
@@ -127,6 +138,10 @@ class ProductsStoreFactory @Inject constructor(
                         products = msg.products,
                         loadingState = State.LoadingState.Initial
                     )
+                }
+
+                Msg.NothingToLoad -> {
+                    copy(loadingState = State.LoadingState.NothingToLoad)
                 }
             }
     }

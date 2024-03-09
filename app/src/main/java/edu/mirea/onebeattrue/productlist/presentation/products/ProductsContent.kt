@@ -25,9 +25,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -79,10 +79,8 @@ fun ProductsContent(
             ) {
                 when (state.loadingState) {
                     ProductsStore.State.LoadingState.Initial -> {
-                        OutlinedButton(
-                            onClick = { component.onLoadNextData() }
-                        ) {
-                            Text(text = "Загрузить еще")
+                        SideEffect {
+                            component.onLoadNextData()
                         }
                     }
 
@@ -92,6 +90,10 @@ fun ProductsContent(
 
                     ProductsStore.State.LoadingState.Loading -> {
                         Loading()
+                    }
+
+                    ProductsStore.State.LoadingState.NothingToLoad -> {
+                        NothingToLoad()
                     }
                 }
             }
@@ -165,6 +167,21 @@ private fun Loading(
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun NothingToLoad(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.nothing_to_load),
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 
