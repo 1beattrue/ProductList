@@ -8,7 +8,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import edu.mirea.onebeattrue.productlist.domain.entity.Product
 import edu.mirea.onebeattrue.productlist.domain.usecase.GetProductsUseCase
-import edu.mirea.onebeattrue.productlist.domain.usecase.LoadNextDataUseCase
+import edu.mirea.onebeattrue.productlist.domain.usecase.LoadNextProductsUseCase
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Intent
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Label
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.State
@@ -31,6 +31,7 @@ interface ProductsStore : Store<Intent, State, Label> {
             data object Initial : LoadingState
             data object Loading : LoadingState
             data object Failure : LoadingState
+            data object WaitForLoad: LoadingState
             data object NothingToLoad : LoadingState
         }
     }
@@ -44,7 +45,7 @@ interface ProductsStore : Store<Intent, State, Label> {
 class ProductsStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val getProductsUseCase: GetProductsUseCase,
-    private val loadNextDataUseCase: LoadNextDataUseCase
+    private val loadNextProductsUseCase: LoadNextProductsUseCase
 ) {
     fun create(): ProductsStore =
         object : ProductsStore, Store<Intent, State, Label> by storeFactory.create(
@@ -99,7 +100,7 @@ class ProductsStoreFactory @Inject constructor(
                 Intent.LoadNextData -> {
                     scope.launch {
                         dispatch(Msg.ProductListLoading)
-                        loadNextDataUseCase()
+                        loadNextProductsUseCase()
                     }
                 }
             }
@@ -136,7 +137,7 @@ class ProductsStoreFactory @Inject constructor(
                 is Msg.ProductsLoaded -> {
                     copy(
                         products = msg.products,
-                        loadingState = State.LoadingState.Initial
+                        loadingState = State.LoadingState.WaitForLoad
                     )
                 }
 

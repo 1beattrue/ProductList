@@ -8,4 +8,6 @@ interface ProductListRepository {
     val products: Flow<List<Product>>
 
     suspend fun loadNextProducts()
+
+    suspend fun retryLoadProducts()
 }

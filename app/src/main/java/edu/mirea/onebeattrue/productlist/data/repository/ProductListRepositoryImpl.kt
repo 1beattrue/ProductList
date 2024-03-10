@@ -15,19 +15,18 @@ import javax.inject.Inject
 class ProductListRepositoryImpl @Inject constructor(
     private val apiService: ApiService
 ) : ProductListRepository {
-    private val loadNextEvent = MutableSharedFlow<Unit>(replay = 1)
+    private val loadProductsEvent = MutableSharedFlow<Int>(replay = 1)
 
     private val loadedProducts = mutableListOf<Product>()
     private var skip = 0
 
     override val products: Flow<List<Product>>
         get() = flow {
-            loadNextEvent.emit(Unit)
-            loadNextEvent.collect {
+            loadProductsEvent.emit(skip)
+            loadProductsEvent.collect {
                 val nextProducts = apiService.loadProducts(skip, LIMIT).products.toEntities()
 
                 loadedProducts += nextProducts
-                skip += LIMIT
                 Log.d("ProductListRepositoryImpl", "$skip")
                 emit(loadedProducts.toList())
             }
@@ -39,7 +38,12 @@ class ProductListRepositoryImpl @Inject constructor(
             }
 
     override suspend fun loadNextProducts() {
-        loadNextEvent.emit(Unit)
+        skip += LIMIT
+        loadProductsEvent.emit(skip)
+    }
+
+    override suspend fun retryLoadProducts() {
+        loadProductsEvent.emit(skip)
     }
 
     companion object {

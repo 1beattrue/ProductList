@@ -79,9 +79,6 @@ fun ProductsContent(
             ) {
                 when (state.loadingState) {
                     ProductsStore.State.LoadingState.Initial -> {
-                        SideEffect {
-                            component.onLoadNextData()
-                        }
                     }
 
                     ProductsStore.State.LoadingState.Failure -> {
@@ -94,6 +91,12 @@ fun ProductsContent(
 
                     ProductsStore.State.LoadingState.NothingToLoad -> {
                         NothingToLoad()
+                    }
+
+                    ProductsStore.State.LoadingState.WaitForLoad -> {
+                        SideEffect {
+                            component.onLoadNextData()
+                        }
                     }
                 }
             }
@@ -151,7 +154,7 @@ private fun Failure(
             )
             Text(
                 text = stringResource(R.string.loading_failure),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.error
             )
         }
@@ -215,7 +218,7 @@ private fun ProductCard(
             GlideImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.onBackground),
                 model = product.thumbnail,
                 contentDescription = null,
