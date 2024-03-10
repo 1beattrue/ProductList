@@ -117,14 +117,16 @@ fun SearchContent(
             SearchStore.State.SearchState.EmptyResult -> {
                 Text(
                     modifier = Modifier.padding(24.dp),
-                    text = stringResource(R.string.nothing_to_show)
+                    text = stringResource(R.string.nothing_to_show),
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
 
             SearchStore.State.SearchState.Failure -> {
                 Text(
                     modifier = Modifier.padding(24.dp),
-                    text = stringResource(R.string.search_failure)
+                    text = stringResource(R.string.search_failure),
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
 
@@ -229,16 +231,14 @@ private fun ProductPreview(
                     text = product.title,
                     style = MaterialTheme.typography.headlineMedium
                 )
-                RatingBar(
-                    rating = product.rating.roundedRating()
-                )
                 Text(
                     text = product.brand,
                     style = MaterialTheme.typography.bodyMedium
                 )
+                RatingBar(
+                    rating = product.rating.roundedRating()
+                )
                 Text(
-                    modifier = Modifier
-                        .align(Alignment.End),
                     text = product.price.formattedPrice(),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold

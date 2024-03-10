@@ -1,9 +1,10 @@
 package edu.mirea.onebeattrue.productlist.domain.entity
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
+@[Parcelize Immutable]
 data class Product(
     val id: Int,
 

@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import edu.mirea.onebeattrue.productlist.R
 import edu.mirea.onebeattrue.productlist.domain.entity.Product
 import edu.mirea.onebeattrue.productlist.presentation.extensions.formattedPrice
@@ -199,7 +200,9 @@ private fun ProductCard(
                     .clip(MaterialTheme.shapes.small),
                 model = product.thumbnail,
                 contentDescription = null,
-                contentScale = ContentScale.FillWidth
+                contentScale = ContentScale.FillWidth,
+                loading = placeholder(R.drawable.empty_image) // TODO: проверить помогло ли
+
             ) {
                 it.error(R.drawable.empty_image).load(product.thumbnail)
             }
