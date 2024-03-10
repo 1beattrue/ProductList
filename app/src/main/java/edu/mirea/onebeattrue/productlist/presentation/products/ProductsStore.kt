@@ -1,6 +1,5 @@
 package edu.mirea.onebeattrue.productlist.presentation.products
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -12,7 +11,6 @@ import edu.mirea.onebeattrue.productlist.domain.usecase.LoadNextProductsUseCase
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Intent
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.Label
 import edu.mirea.onebeattrue.productlist.presentation.products.ProductsStore.State
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,8 +28,7 @@ interface ProductsStore : Store<Intent, State, Label> {
         sealed interface LoadingState {
             data object Initial : LoadingState
             data object Loading : LoadingState
-            data object Failure : LoadingState
-            data object WaitForLoad: LoadingState
+            data object WaitForLoad : LoadingState
             data object NothingToLoad : LoadingState
         }
     }
@@ -61,14 +58,12 @@ class ProductsStoreFactory @Inject constructor(
 
     private sealed interface Action {
         data object ProductListLoading : Action
-        data object ProductListLoadingFailure : Action
         data class ProductsLoaded(val products: List<Product>) : Action
     }
 
     private sealed interface Msg {
         data class ProductsLoaded(val products: List<Product>) : Msg
         data object ProductListLoading : Msg
-        data object ProductListLoadingFailure : Msg
         data object NothingToLoad : Msg
     }
 
@@ -77,10 +72,8 @@ class ProductsStoreFactory @Inject constructor(
             scope.launch {
                 dispatch(Action.ProductListLoading)
                 getProductsUseCase()
-                    .catch { dispatch(Action.ProductListLoadingFailure) }
                     .collect {
                         dispatch(Action.ProductsLoaded(it))
-                        Log.d("BootstrapperImpl", "collect")
                     }
             }
         }
@@ -118,7 +111,6 @@ class ProductsStoreFactory @Inject constructor(
                 }
 
                 Action.ProductListLoading -> dispatch(Msg.ProductListLoading)
-                Action.ProductListLoadingFailure -> dispatch(Msg.ProductListLoadingFailure)
             }
         }
     }
@@ -128,10 +120,6 @@ class ProductsStoreFactory @Inject constructor(
             when (msg) {
                 Msg.ProductListLoading -> {
                     copy(loadingState = State.LoadingState.Loading)
-                }
-
-                Msg.ProductListLoadingFailure -> {
-                    copy(loadingState = State.LoadingState.Failure)
                 }
 
                 is Msg.ProductsLoaded -> {

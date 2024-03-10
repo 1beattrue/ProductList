@@ -27,11 +27,11 @@ class ProductListRepositoryImpl @Inject constructor(
                 val nextProducts = apiService.loadProducts(skip, LIMIT).products.toEntities()
 
                 loadedProducts += nextProducts
-                Log.d("ProductListRepositoryImpl", "$skip")
                 emit(loadedProducts.toList())
+                Log.d("ProductListRepositoryImpl", loadedProducts.size.toString())
             }
         }
-            .retry(2) { throwable ->
+            .retry { throwable ->
                 Log.e("ProductListRepositoryImpl", throwable.message.toString())
                 delay(RETRY_TIMEOUT_MILLIS)
                 true
@@ -39,10 +39,6 @@ class ProductListRepositoryImpl @Inject constructor(
 
     override suspend fun loadNextProducts() {
         skip += LIMIT
-        loadProductsEvent.emit(skip)
-    }
-
-    override suspend fun retryLoadProducts() {
         loadProductsEvent.emit(skip)
     }
 
