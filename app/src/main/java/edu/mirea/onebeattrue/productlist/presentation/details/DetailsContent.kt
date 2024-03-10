@@ -82,7 +82,8 @@ private fun DetailsCard(
                     items = product.images
                 ) { image ->
                     GlideImage(
-                        modifier = Modifier.animateItemPlacement(),
+                        modifier = Modifier
+                            .animateItemPlacement(),
                         model = image,
                         contentDescription = null,
                         contentScale = ContentScale.FillHeight

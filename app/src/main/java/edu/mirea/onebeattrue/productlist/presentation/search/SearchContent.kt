@@ -211,7 +211,7 @@ private fun ProductPreview(
         ) {
             GlideImage(
                 modifier = Modifier
-                    .width(128.dp)
+                    .weight(0.4f)
                     .clip(MaterialTheme.shapes.small),
                 model = product.thumbnail,
                 contentDescription = null,
@@ -219,7 +219,10 @@ private fun ProductPreview(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier
+                    .weight(0.6f)
+                    .padding(horizontal = 8.dp)
+                ,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(

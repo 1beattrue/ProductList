@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">ProductList</string>
-    <string name="loading_failure">Ошибка загрузки данных</string>
-    <string name="search">Поиск</string>
-    <string name="nothing_to_load">Товары кончились</string>
-    <string name="nothing_to_show">Ничего не найдено</string>
-    <string name="search_failure">Что-то пошло не так…</string>
-    <string name="description_title">Описание:</string>
-    <string name="details_title">Описание товара</string>
+    <string name="loading_failure">Loading failure</string>
+    <string name="search">Search</string>
+    <string name="nothing_to_load">No more products</string>
+    <string name="nothing_to_show">Nothing to show</string>
+    <string name="search_failure">Something went wrong…</string>
+    <string name="description_title">Description:</string>
+    <string name="details_title">Product details</string>
 </resources>
