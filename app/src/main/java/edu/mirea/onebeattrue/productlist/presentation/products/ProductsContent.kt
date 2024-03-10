@@ -201,8 +201,7 @@ private fun ProductCard(
                 model = product.thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth,
-                loading = placeholder(R.drawable.empty_image) // TODO: проверить помогло ли
-
+                loading = placeholder(R.drawable.empty_image)
             ) {
                 it.error(R.drawable.empty_image).load(product.thumbnail)
             }
