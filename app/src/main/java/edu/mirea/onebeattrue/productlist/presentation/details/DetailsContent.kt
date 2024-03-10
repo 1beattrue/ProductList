@@ -49,7 +49,8 @@ fun DetailsContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopBar(
-                onBackClick = { component.onClickBack() }
+                onBackClick = { component.onClickBack() },
+                product = state.product
             )
         }
     ) { paddingValues ->
@@ -118,10 +119,6 @@ private fun ProductDescription(
             rating = product.rating.roundedRating()
         )
         Text(
-            text = product.brand,
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Text(
             modifier = Modifier
                 .align(Alignment.End),
             text = product.price.formattedPrice(),
@@ -144,11 +141,15 @@ private fun ProductDescription(
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    product: Product
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
-        title = { Text(text = stringResource(R.string.details_title)) },
+        title = {
+            //Text(text = stringResource(R.string.details_title))
+            Text(text = product.brand)
+        },
         navigationIcon = {
             IconButton(onClick = { onBackClick() }) {
                 Icon(
