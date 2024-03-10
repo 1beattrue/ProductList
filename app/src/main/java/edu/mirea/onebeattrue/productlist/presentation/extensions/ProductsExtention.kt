@@ -1,7 +1,9 @@
 package edu.mirea.onebeattrue.productlist.presentation.extensions
 
-import java.util.Locale
+import kotlin.math.roundToInt
 
 fun Int.formattedPrice(): String = "$this $"
 
-fun Float.formattedRating(): String = String.format(Locale.US,"%.1f", this)
+fun Float.roundedRating(): Float = (this * 10).roundToInt() / 10f
+
+fun Float.formattedRating(): String = toString()

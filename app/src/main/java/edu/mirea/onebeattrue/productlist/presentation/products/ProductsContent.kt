@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,6 +44,7 @@ import edu.mirea.onebeattrue.productlist.R
 import edu.mirea.onebeattrue.productlist.domain.entity.Product
 import edu.mirea.onebeattrue.productlist.presentation.extensions.formattedPrice
 import edu.mirea.onebeattrue.productlist.presentation.extensions.formattedRating
+import edu.mirea.onebeattrue.productlist.presentation.extensions.roundedRating
 import edu.mirea.onebeattrue.productlist.presentation.ui.theme.RatingStar
 
 @Composable
@@ -181,33 +183,41 @@ private fun ProductCard(
             modifier = Modifier
                 .clickable { onProductClick(product) }
                 .fillMaxWidth()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(8.dp)
         ) {
             GlideImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.large)
+                    .clip(MaterialTheme.shapes.small)
                     .background(MaterialTheme.colorScheme.onBackground),
                 model = product.thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
             )
-            Text(
-                text = product.title,
-                style = MaterialTheme.typography.headlineLarge
-            )
-            RatingBar(rating = product.rating)
-            Text(
-                text = product.brand,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                modifier = Modifier.align(Alignment.End),
-                text = product.price.formattedPrice(),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = product.title,
+                    style = MaterialTheme.typography.headlineLarge
+                )
+                RatingBar(
+                    rating = product.rating.roundedRating()
+                )
+                Text(
+                    text = product.brand,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.End),
+                    text = product.price.formattedPrice(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
