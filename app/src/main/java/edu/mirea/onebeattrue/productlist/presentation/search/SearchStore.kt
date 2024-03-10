@@ -31,7 +31,7 @@ interface SearchStore : Store<Intent, State, Label> {
             data object Loading : SearchState
             data object Failure : SearchState
             data object EmptyResult : SearchState
-            data class Loaded(val cities: List<Product>) : SearchState
+            data class Loaded(val products: List<Product>) : SearchState
         }
     }
 

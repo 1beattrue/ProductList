@@ -1,6 +1,6 @@
 package edu.mirea.onebeattrue.productlist.presentation.products
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,6 +47,7 @@ import edu.mirea.onebeattrue.productlist.presentation.extensions.formattedRating
 import edu.mirea.onebeattrue.productlist.presentation.extensions.roundedRating
 import edu.mirea.onebeattrue.productlist.presentation.ui.theme.RatingStar
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductsContent(
     modifier: Modifier = Modifier,
@@ -54,45 +55,52 @@ fun ProductsContent(
 ) {
     val state by component.model.collectAsState()
 
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
     ) {
-        item {
-            SearchCard(onSearchClick = { component.onClickSearch() })
-        }
-        items(
-            items = state.products,
-            key = { it.id },
-        ) { product ->
-            ProductCard(
-                product = product,
-                onProductClick = {
-                    component.onClickProduct(it)
-                }
-            )
-        }
-        item {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                when (state.loadingState) {
-                    ProductsStore.State.LoadingState.Initial -> {
+        SearchCard(
+            modifier = Modifier.padding(16.dp),
+            onSearchClick = { component.onClickSearch() }
+        )
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(
+                items = state.products,
+                key = { it.id }
+            ) { product ->
+                ProductCard(
+                    modifier = Modifier.animateItemPlacement(),
+                    product = product,
+                    onProductClick = {
+                        component.onClickProduct(it)
                     }
+                )
+            }
+            item {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when (state.loadingState) {
+                        ProductsStore.State.LoadingState.Initial -> {
+                        }
 
-                    ProductsStore.State.LoadingState.Loading -> {
-                        Loading()
-                    }
+                        ProductsStore.State.LoadingState.Loading -> {
+                            Loading()
+                        }
 
-                    ProductsStore.State.LoadingState.NothingToLoad -> {
-                        NothingToLoad()
-                    }
+                        ProductsStore.State.LoadingState.NothingToLoad -> {
+                            NothingToLoad()
+                        }
 
-                    ProductsStore.State.LoadingState.WaitForLoad -> {
-                        SideEffect {
-                            component.onLoadNextData()
+                        ProductsStore.State.LoadingState.WaitForLoad -> {
+                            SideEffect {
+                                component.onLoadNextData()
+                            }
                         }
                     }
                 }
@@ -107,7 +115,7 @@ private fun SearchCard(
     onSearchClick: () -> Unit
 ) {
     Card(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
     ) {
         Row(
@@ -188,8 +196,7 @@ private fun ProductCard(
             GlideImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.onBackground),
+                    .clip(MaterialTheme.shapes.small),
                 model = product.thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
@@ -223,7 +230,7 @@ private fun ProductCard(
 }
 
 @Composable
-private fun RatingBar(
+fun RatingBar(
     modifier: Modifier = Modifier,
     rating: Float = 0f
 ) {
