@@ -86,7 +86,9 @@ private fun DetailsCard(
                         model = image,
                         contentDescription = null,
                         contentScale = ContentScale.FillHeight
-                    )
+                    ) {
+                        it.error(R.drawable.empty_image).load(image)
+                    }
                 }
             }
         }

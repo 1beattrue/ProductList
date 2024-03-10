@@ -200,7 +200,9 @@ private fun ProductCard(
                 model = product.thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
-            )
+            ) {
+                it.error(R.drawable.empty_image).load(product.thumbnail)
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Column(
                 modifier = Modifier.padding(horizontal = 8.dp),
