@@ -10,7 +10,7 @@ activity-compose = "1.8.2"
 compose-bom = "2024.02.02"
 
 mvikotlin = "3.2.1"
-decompose = "2.1.2"
+decompose = "2.2.0-alpha03"
 ksp = "1.9.21-1.0.15"
 dagger = "2.50"
 glide = "1.0.0-beta01"

@@ -218,13 +218,14 @@ private fun ProductPreview(
                 model = product.thumbnail,
                 contentDescription = null,
                 contentScale = ContentScale.Fit
-            )
+            ) {
+                it.error(R.drawable.empty_image).load(product.thumbnail)
+            }
             Spacer(modifier = Modifier.width(8.dp))
             Column(
                 modifier = Modifier
                     .weight(0.6f)
-                    .padding(horizontal = 8.dp)
-                ,
+                    .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
